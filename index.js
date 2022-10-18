@@ -227,11 +227,3 @@ http.createServer(app).listen(PORT, () => {
 //Initialize DB
 initDB();
 
-//Прикрепить фронт (обосрись но сделай) - WIP
-// !!МОЖНО ПИСАТЬ В ТЕЛЕГУ АРТЕМУ!!
-//POST - DONE
-//GET - DONE
-//GET :id = by id - DONE
-//PATCH :id - DONE(I hope so)
-//DELETE - DONE(I hope so)
-//DELETE :id = by id - DONE
