@@ -7,9 +7,9 @@
   {{#each todoList}}
     {{#dataValues}}
       {{#if isCompleted}}
-        <li style="color: Green">{{title}} (Completed)</li>
+        <li>{{title}} <label style="color:green">(Completed)</label></li>
       {{else}}
-        <li style="color: Red">{{title}} (Not Completed)</li>
+        <li>{{title}} <label style="color: Red">(Not Completed)</label></li>
       {{/if}}
     {{/dataValues}}
   {{/each}}
