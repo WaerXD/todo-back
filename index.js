@@ -226,4 +226,3 @@ http.createServer(app).listen(PORT, () => {
 
 //Initialize DB
 initDB();
-
