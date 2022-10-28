@@ -36,6 +36,34 @@ app.get("/register", async (_, res) => {
   res.render("register");
 });
 
+//Render Log In page
+app.get("/login", async (_, res) => {
+  res.render("login");
+});
+
+//LogIn to existing account
+app.get("/login", async (req, res) => {
+  // Get user data from req - done
+  const username = req.body.username;
+  const password = req.body.password;
+  // Find User in DB
+  const user = await User.findOne({
+    where: {
+      username,
+      password,
+    },
+  });
+
+  if (user === null) {
+    res.status(404).json({
+      message: "User not Found",
+    });
+  } else {
+    // Render user's homepage with Users's ToDo's
+  }
+  // Sequelize associations needed - ask on lecture
+});
+
 // User Registration
 app.post("/register", async (req, res) => {
   try {
