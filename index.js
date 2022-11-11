@@ -41,6 +41,8 @@ app.get("/login", async (_, res) => {
   res.render("login");
 });
 
+///// Not Yet Employed
+
 //LogIn to existing account
 app.get("/login", async (req, res) => {
   const username = req.body.username;
@@ -135,6 +137,9 @@ app.delete("/users", async (_, res) => {
   }
 });
 
+//////////
+
+
 //Get All ToDos
 app.get("/items", async (_, res) => {
   try {
@@ -188,17 +193,12 @@ app.patch("/items/:id", async (req, res) => {
         message: "Not Found",
       });
     } else {
-      await ToDo.update(
+      await updateID.update(
         {
           title: req.body.title,
           description: req.body.description,
           isCompleted: req.body.isCompleted,
         },
-        {
-          where: {
-            id: updateID,
-          },
-        }
       );
       res.status(200).json(await ToDo.findByPk(req.params.id));
     }
@@ -232,15 +232,11 @@ app.delete("/items/:id", async (req, res) => {
         message: "Not Found",
       });
     } else {
-      await ToDo.destroy({
-        where: {
-          id: req.params.id,
-        },
-      });
+      res.status(200).json(deletedElement);
+      await deletedElement.destroy();
     }
-    res.status(200).json(deletedElement);
   } catch (error) {
-    res.status(500).json({
+      res.status(500).json({
       error: error.message,
     });
   }
