@@ -43,7 +43,6 @@ app.get("/login", async (_, res) => {
 
 //LogIn to existing account
 app.get("/login", async (req, res) => {
-  // Get user data from req - done
   const username = req.body.username;
   const password = req.body.password;
   // Find User in DB
