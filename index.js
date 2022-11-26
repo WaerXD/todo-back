@@ -72,7 +72,7 @@ app.patch("/items/:id", async (req, res) => {
         message: "Not Found",
       });
     } else {
-      await updateID.update(
+      await updateUser.update(
         {
           title: req.body.title,
           description: req.body.description,
