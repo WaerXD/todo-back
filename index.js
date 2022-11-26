@@ -3,14 +3,10 @@ const http = require("http");
 const cors = require("cors");
 const { initDB } = require("./db");
 const ToDo = require("./db/models/ToDo.model");
-const User = require("./db/models/User.model");
-const { engine } = require("express-handlebars");
 
 const app = express();
 const PORT = 3000;
 
-app.engine("handlebars", engine());
-app.set("view engine", "handlebars");
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -25,122 +21,11 @@ app.use((req, res, next) => {
   next();
 });
 
-//Render Home Page
-app.get("/", async (_, res) => {
-  const todoList = await ToDo.findAll();
-  res.render("home", { todoList });
-});
-
-//Render Registation Page
-app.get("/register", async (_, res) => {
-  res.render("register");
-});
-
-//Render Log In page
-app.get("/login", async (_, res) => {
-  res.render("login");
-});
-
-//LogIn to existing account
-app.get("/login", async (req, res) => {
-  // Get user data from req - done
-  const username = req.body.username;
-  const password = req.body.password;
-  // Find User in DB
-  const user = await User.findOne({
-    where: {
-      username,
-      password,
-    },
-  });
-
-  if (user === null) {
-    res.status(404).json({
-      message: "User not Found",
-    });
-  } else {
-    // Render user's homepage with Users's ToDo's
-  }
-  // Sequelize associations needed - ask on lecture
-});
-
-// User Registration
-app.post("/register", async (req, res) => {
-  try {
-    const password = req.body.password;
-    const passwordRepeat = req.body.passwordRepeat;
-
-    // Hash the password here (TBI (Yet to be implemented))
-    if (password !== passwordRepeat) {
-      res.render("register", { regError: "Passwords Must Match" });
-    } else {
-      const user = await User.create({
-        username: String(req.body.username),
-        password: String(req.body.password),
-      });
-      res.redirect("/");
-      res.status(200).json({ user });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//Get All Users
-app.get("/users", async (_, res) => {
-  try {
-    const users = await User.findAll();
-    res.json({ users });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Delete User By ID
-app.delete("/users/:id", async (req, res) => {
-  const userID = req.params.id;
-  try {
-    const deletedUser = await User.findByPk(userID);
-    if (deletedUser === null) {
-      res.status(404).json({
-        message: "Not Found",
-      });
-    } else {
-      await User.destroy({
-        where: {
-          id: userID,
-        },
-      });
-      res.status(200).json(deletedUser);
-    }
-  } catch (error) {
-    res.status(500).json({
-      error: error.message,
-    });
-  }
-});
-
-//Delete all Users
-app.delete("/users", async (_, res) => {
-  try {
-    await User.destroy({
-      where: {},
-    });
-    res.status(200).json({
-      message: "Deleted all Users",
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: error.message,
-    });
-  }
-});
-
 //Get All ToDos
 app.get("/items", async (_, res) => {
   try {
     const todoList = await ToDo.findAll();
-    res.json({ todoList });
+    res.status(200).json({ todoList });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -154,8 +39,7 @@ app.post("/items", async (req, res) => {
       description: req.body.description,
       isCompleted: req.body.isCompleted,
     });
-    res.redirect("/");
-    res.json({
+    res.status(200).json({
       todo,
     });
   } catch (error) {
@@ -172,7 +56,7 @@ app.get("/items/:id", async (req, res) => {
         message: "Not Found",
       });
     } else {
-      res.json(todoById);
+      res.status(200).json(todoById);
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -182,9 +66,8 @@ app.get("/items/:id", async (req, res) => {
 //Update existing ToDo element
 app.patch("/items/:id", async (req, res) => {
   try {
-    const updateID = await ToDo.findByPk(req.params.id);
-
-    if (updateID === null) {
+    const updateUser = await ToDo.findByPk(req.params.id);
+    if (updateUser === null) {
       res.status(404).json({
         message: "Not Found",
       });
@@ -197,7 +80,7 @@ app.patch("/items/:id", async (req, res) => {
         },
         {
           where: {
-            id: updateID,
+            id: req.params.id,
           },
         }
       );
