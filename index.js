@@ -21,6 +21,124 @@ app.use((req, res, next) => {
   next();
 });
 
+<<<<<<< HEAD
+=======
+//Render Home Page
+app.get("/", async (_, res) => {
+  const todoList = await ToDo.findAll();
+  res.render("home", { todoList });
+});
+
+//Render Registation Page
+app.get("/register", async (_, res) => {
+  res.render("register");
+});
+
+//Render Log In page
+app.get("/login", async (_, res) => {
+  res.render("login");
+});
+
+///// Not Yet Employed
+
+//LogIn to existing account
+app.get("/login", async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+  // Find User in DB
+  const user = await User.findOne({
+    where: {
+      username,
+      password,
+    },
+  });
+
+  if (user === null) {
+    res.status(404).json({
+      message: "User not Found",
+    });
+  } else {
+    // Render user's homepage with Users's ToDo's
+  }
+  // Sequelize associations needed - ask on lecture
+});
+
+// User Registration
+app.post("/register", async (req, res) => {
+  try {
+    const password = req.body.password;
+    const passwordRepeat = req.body.passwordRepeat;
+
+    // Hash the password here (TBI (Yet to be implemented))
+    if (password !== passwordRepeat) {
+      res.render("register", { regError: "Passwords Must Match" });
+    } else {
+      const user = await User.create({
+        username: String(req.body.username),
+        password: String(req.body.password),
+      });
+      res.redirect("/");
+      res.status(200).json({ user });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//Get All Users
+app.get("/users", async (_, res) => {
+  try {
+    const users = await User.findAll();
+    res.json({ users });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete User By ID
+app.delete("/users/:id", async (req, res) => {
+  const userID = req.params.id;
+  try {
+    const deletedUser = await User.findByPk(userID);
+    if (deletedUser === null) {
+      res.status(404).json({
+        message: "Not Found",
+      });
+    } else {
+      await User.destroy({
+        where: {
+          id: userID,
+        },
+      });
+      res.status(200).json(deletedUser);
+    }
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+});
+
+//Delete all Users
+app.delete("/users", async (_, res) => {
+  try {
+    await User.destroy({
+      where: {},
+    });
+    res.status(200).json({
+      message: "Deleted all Users",
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+});
+
+//////////
+
+
+>>>>>>> 3216645d1c5fe810cf7a8b8927ddefd22a4058e1
 //Get All ToDos
 app.get("/items", async (_, res) => {
   try {
@@ -72,17 +190,20 @@ app.patch("/items/:id", async (req, res) => {
         message: "Not Found",
       });
     } else {
-      await ToDo.update(
+      await updateID.update(
         {
           title: req.body.title,
           description: req.body.description,
           isCompleted: req.body.isCompleted,
         },
+<<<<<<< HEAD
         {
           where: {
             id: req.params.id,
           },
         }
+=======
+>>>>>>> 3216645d1c5fe810cf7a8b8927ddefd22a4058e1
       );
       res.status(200).json(await ToDo.findByPk(req.params.id));
     }
@@ -116,15 +237,11 @@ app.delete("/items/:id", async (req, res) => {
         message: "Not Found",
       });
     } else {
-      await ToDo.destroy({
-        where: {
-          id: req.params.id,
-        },
-      });
+      res.status(200).json(deletedElement);
+      await deletedElement.destroy();
     }
-    res.status(200).json(deletedElement);
   } catch (error) {
-    res.status(500).json({
+      res.status(500).json({
       error: error.message,
     });
   }
