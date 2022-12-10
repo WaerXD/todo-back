@@ -56,7 +56,7 @@ app.get("/items/:id", async (req, res) => {
         message: "Not Found",
       });
     } else {
-      res.status(200).json(todoById);
+      res.status(200).json({ todoById });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -83,9 +83,9 @@ app.patch("/items/:id", async (req, res) => {
             id: req.params.id,
           },
         }
-
       );
-      res.status(200).json(await ToDo.findByPk(req.params.id));
+      const updatedTodo = await ToDo.findByPk(req.params.id);
+      res.status(200).json({updatedTodo});
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -111,17 +111,17 @@ app.delete("/items", async (_, res) => {
 //Delete ToDo element by ID
 app.delete("/items/:id", async (req, res) => {
   try {
-    const deletedElement = await ToDo.findByPk(req.params.id);
-    if (deletedElement === null) {
+    const deletedTodo = await ToDo.findByPk(req.params.id);
+    if (deletedTodo === null) {
       res.status(404).json({
         message: "Not Found",
       });
     } else {
-      res.status(200).json(deletedElement);
-      await deletedElement.destroy();
+      await deletedTodo.destroy();
+      res.status(200).json({ message: "ToDo was deleted" });
     }
   } catch (error) {
-      res.status(500).json({
+    res.status(500).json({
       error: error.message,
     });
   }
